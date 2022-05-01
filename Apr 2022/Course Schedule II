@@ -1,0 +1,95 @@
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        vector<int>indegree(numCourses);
+        unordered_map<int,vector<int>>m;
+        
+        for(auto&i :prerequisites)
+        {
+            m[i[1]].push_back(i[0]);
+            indegree[i[0]]++;
+        }
+        
+        queue<int>q;
+        
+        for(int i=0;i<numCourses;i++)
+        {
+            if(!indegree[i])
+                q.push(i);
+        }
+        vector<int>ans;
+        while(!q.empty())
+        {
+            int p=q.front();
+            q.pop();
+            ans.push_back(p);
+            
+            for(auto& i:m[p])
+            {
+                if(!--indegree[i])
+                    q.push(i);
+            }
+        }
+        
+        if(ans.size()==numCourses)
+            return ans;
+        return {};
+    }
+};
+
+
+
+
+
+///dfs solution
+class Solution {
+public:
+    vector<int>indegree;
+    unordered_map<int,vector<int>>m;
+    void dfs(int i,vector<int>&ans)
+    {
+        ans.push_back(i);
+        
+        for(auto& j:m[i])
+        {
+            if(!--indegree[j])
+                dfs(j,ans);
+        }
+    }
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        indegree.resize(numCourses);
+        
+        for(auto&i :prerequisites)
+        {
+            m[i[1]].push_back(i[0]);
+            indegree[i[0]]++;
+        }
+        
+        queue<int>q;
+        
+        for(int i=0;i<numCourses;i++)
+        {
+            if(!indegree[i])
+                q.push(i);
+        }
+        vector<int>ans;
+        while(!q.empty())
+        {
+            int p=q.front();
+            q.pop();
+            //ans.push_back(p);
+            dfs(p,ans);
+            // for(auto& i:m[p])
+            // {
+            //     if(!--indegree[i])
+            //         q.push(i);
+            // }
+        }
+        
+        if(ans.size()==numCourses)
+            return ans;
+        return {};
+    }
+};
